@@ -1,20 +1,14 @@
-# ============================================================
-# A/B TEST ANALYSIS - E-COMMERCE PRICING STRATEGY
-# ============================================================
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import ttest_ind, chi2_contingency, f_oneway
 
-# -------------------- LOAD DATA --------------------
 
 ab = pd.read_csv(r"C:\Users\Kittu\OneDrive\Desktop\DSML MODULE\ab_data.csv")
 countries = pd.read_csv(r"C:\Users\Kittu\OneDrive\Desktop\DSML MODULE\countries.csv")
 
 print("Original data:", ab.shape)
-
-# -------------------- DATA CLEANING --------------------
 
 # Remove group/landing-page mismatches
 ab = ab[
@@ -27,7 +21,6 @@ ab = ab.drop_duplicates("user_id")
 
 print("Cleaned data:", ab.shape)
 
-# -------------------- MERGE COUNTRY DATA --------------------
 
 countries = countries.drop_duplicates("user_id")
 
@@ -35,10 +28,6 @@ data = ab.merge(countries, on="user_id", how="inner")
 
 print("\nCountry distribution:")
 print(data["country"].value_counts())
-
-# ============================================================
-# 1. CONVERSION RATE
-# ============================================================
 
 summary = data.groupby("group")["converted"].agg(
     ["count", "sum", "mean"]
@@ -59,8 +48,6 @@ print("\nControl Conversion :", round(control_rate * 100, 3), "%")
 print("Treatment Conversion:", round(treatment_rate * 100, 3), "%")
 print("Difference          :", round((treatment_rate-control_rate)*100, 3), "percentage points")
 
-# -------------------- GRAPH --------------------
-
 summary["conversion_%"].plot(
     kind="bar",
     figsize=(7,5)
@@ -72,10 +59,6 @@ plt.ylabel("Conversion Rate (%)")
 plt.xticks(rotation=0)
 plt.show()
 
-# ============================================================
-# 2. WELCH T-TEST
-# ============================================================
-
 t_stat, t_p = ttest_ind(
     treatment,
     control,
@@ -85,10 +68,6 @@ t_stat, t_p = ttest_ind(
 print("\nWelch T-Test")
 print("t-statistic:", round(t_stat, 4))
 print("p-value:", round(t_p, 4))
-
-# ============================================================
-# 3. CHI-SQUARE TEST
-# ============================================================
 
 table = pd.crosstab(
     data["group"],
@@ -100,10 +79,6 @@ chi2, chi_p, dof, expected = chi2_contingency(table)
 print("\nChi-Square Test")
 print("Chi-square:", round(chi2, 4))
 print("p-value:", round(chi_p, 4))
-
-# ============================================================
-# 4. COUNTRY ANALYSIS
-# ============================================================
 
 country_summary = data.groupby("country")["converted"].agg(
     ["count", "sum", "mean"]
@@ -128,9 +103,6 @@ plt.ylabel("Conversion Rate (%)")
 plt.xticks(rotation=0)
 plt.show()
 
-# ============================================================
-# 5. ANOVA ACROSS COUNTRIES
-# ============================================================
 
 country_groups = [
     group["converted"].values
@@ -142,10 +114,6 @@ f_country, p_country = f_oneway(*country_groups)
 print("\nCountry ANOVA")
 print("F-statistic:", round(f_country, 4))
 print("p-value:", round(p_country, 4))
-
-# ============================================================
-# 6. COUNTRY × STRATEGY ANALYSIS
-# ============================================================
 
 cs = data.groupby(
     ["country", "group"]
@@ -169,7 +137,7 @@ plt.xlabel("Country")
 plt.ylabel("Conversion Rate")
 plt.show()
 
-# ============================================================
+# ==============================================_==============
 # 7. ANOVA: COUNTRY × STRATEGY
 # ============================================================
 
