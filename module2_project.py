@@ -5,8 +5,8 @@ import seaborn as sns
 from scipy.stats import ttest_ind, chi2_contingency, f_oneway
 
 
-ab = pd.read_csv(r"C:\Users\Kittu\OneDrive\Desktop\DSML MODULE\ab_data.csv")
-countries = pd.read_csv(r"C:\Users\Kittu\OneDrive\Desktop\DSML MODULE\countries.csv")
+ab = pd.read_csv(r""C:\Users\amans\Downloads\ab_data.csv"")
+countries = pd.read_csv(r:""C:\Users\amans\Downloads\countries.csv"")
 
 print("Original data:", ab.shape)
 
